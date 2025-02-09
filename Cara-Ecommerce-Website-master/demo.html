@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Cart</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css">
+    <!-- <script defer src="https://kit.fontawesome.com/433888fe69.js" crossorigin="anonymous"></script> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- <h1>Heading 1 Example</h1> -->
+    <section id="header">
+        <a href="#"><img src="img/logo.png" class="logo" alt="logo"></a>
+        <div>
+            <ul id="navbar">
+                <li><a class="active" href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                <a href="#" id="close" ><i class="fa-solid fa-xmark"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a>
+            <i id="bar" class="fas fa-outdent"></i>
+        </div>
+    </section>
+    <section id="page-header" class="about-header">
+        <h2>#Let's Talk</h2>
+        <p>LEAVE a MESSAGE, We love to hear from you!</p >
+    </section>
+    <div id="products">
+        <div class="product-card" data-price="180">
+            <span>Cartoon Astronaut T-Shirts</span>
+            <span>Price: $180</span>
+            <input type="number" value="1" min="1" class="quantity" />
+        </div>
+        <div class="product-card" data-price="150">
+            <span>Cartoon Astronaut T Shirts</span>
+            <span>Price: $150</span>
+            <input type="number" value="1" min="1" class="quantity" />
+        </div>
+        <div class="product-card" data-price="120">
+            <span>Cartoon Astronaut T-Shirt</span>
+            <span>Price: $120</span>
+            <input type="number" value="1" min="1" class="quantity" />
+        </div>
+    </div>
+    
+    <div class="cart" id="cart">
+        <h2>Shopping Cart</h2>
+        <div id="cart-items"></div>
+        <div class="total">Total: $<span id="total-price">0.00</span></div>
+    </div>
+
+    <script>
+        const cartItemsContainer = document.getElementById('cart-items');
+        const totalPriceElement = document.getElementById('total-price');
+        let cartItems = [];
+
+        // Pre-add items to the cart on page load
+        window.onload = () => {
+            document.querySelectorAll('.product-card').forEach(productCard => {
+                const price = parseFloat(productCard.dataset.price);
+                const quantityInput = productCard.querySelector('.quantity');
+                const quantity = parseInt(quantityInput.value);
+
+                addToCart(productCard.innerText.split('\n')[0], price, quantity);
+                
+                // Add event listener to update cart when quantity changes
+                quantityInput.addEventListener('input', () => {
+                    updateCartItemQuantity(productCard.innerText.split('\n')[0], parseInt(quantityInput.value));
+                });
+            });
+        };
+
+        function addToCart(productName, price, quantity) {
+            const existingItem = cartItems.find(item => item.name === productName);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cartItems.push({ name: productName, price, quantity });
+            }
+            updateCart();
+        }
+
+        function updateCartItemQuantity(productName, newQuantity) {
+            const existingItem = cartItems.find(item => item.name === productName);
+            if (existingItem) {
+                existingItem.quantity = newQuantity;
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `${item.name}: $${item.price.toFixed(2)} x ${item.quantity} = $${itemTotal.toFixed(2)}`;
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            totalPriceElement.textContent = total.toFixed(2);
+        }
+    </script>
+
+<footer class="section-p1">
+    <div class="col">
+        <img class="logo" src="img/logo.png">
+        <h4>Contact</h4>
+        <p><strong>Address: </strong> 562 Wellington Road, Street 32, San Francisco</p>
+        <p><strong>Phone: </strong> +01 2222 365 /(+91) 012345 6789</p>
+        <p><strong>Hours: </strong> 10:00 - 18:00, Mon - Sat</p>
+        <div class="follow">
+            <h4>Follow Us</h4>
+            <div class="icon">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-pinterest-p"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">About Us</a>
+        <a href="#">Delivery Information</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Contact Us</a>
+    </div>
+    <div class="col">
+        <h4>My Account</h4>
+        <a href="#">Sign In</a>
+        <a href="#">View Cart</a>
+        <a href="#">My Wishlist</a>
+        <a href="#">Track My Order</a>
+        <a href="#">Help</a>
+    </div>
+
+    <div class="col install">
+        <h4>Install App</h4>
+        <p>From App Store or Google Play</p>
+        <div class="row">
+            <img src="img/pay/app.jpg" alt="">
+            <img src="img/pay/play.jpg" alt="">
+        </div>
+        <p>Secre Payment Gateways</p>
+        <img src="img/pay/pay.png" alt="">
+    </div>
+    <div class="copyright">
+        <p>© 2023, cara.pvt - All the rights are with Cara.Pvt </p>
+    </div>
+</footer>
+</body>
+</html>

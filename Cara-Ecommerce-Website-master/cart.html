@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css">
+</head>
+
+<body>
+    <section id="header">
+        <a href="#"><img src="img/logo.png" class="logo" alt="logo"></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="lg-bag"><a class="active" href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a>
+            <i id="bar" class="fas fa-outdent"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2>#Let's Talk</h2>
+        <p>LEAVE a MESSAGE, We love to hear from you!</p>
+    </section>
+
+    <section id="cart" class="section-p1">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Subtotal</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Products will be inserted here dynamically from JavaScript -->
+            </tbody>
+        </table>
+    </section>
+
+    <section id="cart-add" class="section-p1">
+        <div id="coupon">
+            <h3>Apply Coupon</h3>
+            <div>
+                <input type="text" placeholder="Enter Your Coupon">
+                <button class="normal">Apply</button>
+            </div>
+        </div>
+        <div id="subtotal">
+            <h3>Cart Total</h3>
+            <table>
+                <tr>
+                    <td>Cart Subtotal</td>
+                    <td id="cart-subtotal">0 Rs.</td>
+                </tr>
+                <tr>
+                    <td>Shipping</td>
+                    <td>Free</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong id="cart-total">0 Rs.</strong></td>
+                </tr>
+            </table>
+            <button class="normal">Proceed to checkout</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <!-- Footer content -->
+    </footer>
+    <script>
+        window.onload = function() {
+            const cartItemsContainer = document.querySelector('tbody');  // The table body where cart items will be displayed
+            const cartSubtotalElement = document.getElementById('cart-subtotal'); // Subtotal field
+            const cartTotalElement = document.getElementById('cart-total'); // Total price field
+            const checkoutButton = document.querySelector("#subtotal button"); // Proceed to checkout button
+            let total = 0;  // Variable to store the total cart price
+    
+            // Retrieve cart from Local Storage
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+            // Check if the cart is empty
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = "<tr><td colspan='6'>Your cart is empty!</td></tr>";
+            } else {
+                let image = document.querySelectorAll('img')
+                // Loop through each item in the cart and display it
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+    
+                    // Create a new row for each cart item
+                    const row = `
+                        <tr>
+                            <td><a href="#" onclick="removeItem(${index})"><i class="fa-solid fa-times-circle"></i></a></td>
+                            <td><img src="img/products/f1.jpg"</td>
+                            <td>${item.name}</td>
+                            <td>$${item.price.toFixed(2)}</td>
+                            <td><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)"></td>
+                            <td>$${itemTotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    cartItemsContainer.innerHTML += row;
+                });
+    
+                // Update cart subtotal and total
+                cartSubtotalElement.innerText = `${total.toFixed(2)} Rs.`;
+                cartTotalElement.innerText = `${total.toFixed(2)} Rs.`;
+            }
+    
+            // Add event listener to the Proceed to Checkout button
+            checkoutButton.addEventListener('click', function() {
+                if (cart.length === 0) {
+                    alert("Your cart is empty! Please add some items to place an order.");
+                } else {
+                    // Simulate placing an order
+                    alert("Order placed successfully!");
+                    
+                    // Clear the cart
+                    localStorage.removeItem('cart');
+                    
+                    // Reload the page to reflect changes
+                    window.location.reload();
+                }
+            });
+        };
+    
+        // Function to update the quantity of an item in the cart
+        function updateQuantity(index, newQuantity) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].quantity = parseInt(newQuantity);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.reload(); // Reload the page to update the cart
+        }
+    
+        // Function to remove an item from the cart
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1); // Remove the item at the specified index
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.reload(); // Reload the page to update the cart
+        }
+    </script>
+    
+    
+
+</body>
+
+</html>
